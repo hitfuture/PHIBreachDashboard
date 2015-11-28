@@ -255,6 +255,8 @@ function(input, output) {
                         breachesInRange %>% filter(!is.na(Covered.Entity.Type) &
                                                            !is.na(Individuals.Affected))  %>%
                         count(Breach.Year,location.of.breached.info.1) 
+                breachCountByYear <- breachesInRange%>%group_by(Breach.Year)%>%count()
+                
                 if (nrow(breachesRange) > 0) {
                         ggplot(
                                 breachesRange, aes(
