@@ -34,6 +34,8 @@ sidebar <-         dashboardSidebar(
                 menuItem("Breach by Devices", tabName = "breachByDevice", icon = icon("map")),
                 menuItem("Breach Geography", tabName = "breachByGeo", icon = icon("map")),
                 menuItem("Breach Data", tabName = "breachData", icon = icon("table")),
+                menuItem("Text Analysis", tabName = "textAnalysis", icon = icon("cloud")),
+                
              menuItem("Help", tabName = "help", icon = icon("question-circle"))
                 ),
        
@@ -83,6 +85,11 @@ body <-  dashboardBody(tabItems(
                                 title = "Breach Data",        
                                 DT::dataTableOutput("breachData",width="100%",height="100%")
                        ),
+        tabItem(tabName = "textAnalysis",
+                h1("Breach Information Cloud"),
+                title = "Breach Text Cloud",        
+                ((plotOutput("webDescription",width = "100%", height = 720 )))
+        ),
         tabItem(tabName = "help",
                 h3("Breach Dashboard Help"),
                 fluidRow(box(width = 12,uiOutput("helpOverview"))),

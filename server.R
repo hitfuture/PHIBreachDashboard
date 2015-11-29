@@ -95,6 +95,26 @@ function(input, output) {
                         arrange( State)%>%
                         filter(State != "DC")})
         
+        reactiveCorpusOfWebDescription <- reactive ({
+                library(tm)
+                withProgress({
+                        setProgress(message = "Building Wordcloud...")
+                        contentList <- list(content = "Web.Description", author = "Name.of.Covered.Entity", heading = "Name.of.Covered.Entity",topic="Type.of.Breach")
+                        reader <- readTabular(mapping = contentList)
+                        dataSource <- DataframeSource(breach.filtered())
+                        breachCorpus <- Corpus(dataSource, readerControl = c(list(reader = reader),"the"))
+                        inspect(breachCorpus[1:2])
+                        skipWords <- function(x) removeWords(x, stopwords("english"))
+                        as.lower <- function(x) content_transformer(tolower)
+                        list.of.functions <- list(stripWhitespace,
+                                                  skipWords,
+                                                  removePunctuation,
+                                                  content_transformer(tolower))
+                        bcMap <- tm_map(breachCorpus, FUN = tm_reduce, tmFuns = list.of.functions)
+                        return(bcMap)
+                })
+        })
+        
         output$breachPlotByYear <- renderPlot({
                 breachesInRange <- breach.filtered()
                 if (nrow(breachesInRange) > 0) {
@@ -283,6 +303,20 @@ function(input, output) {
                 ) )
 
                 })
+        output$webDescription <- renderPlot({
+                library(wordcloud)
+                library(RColorBrewer)
+                bcMap <- reactiveCorpusOfWebDescription()
+                doc.term.matrix  <- DocumentTermMatrix(bcMap   ,control = list(minWordLength = 1))
+                dt.mat <- as.matrix(doc.term.matrix)
+                freq <- colSums(dt.mat)
+                hiFreq <- sort(freq,decreasing = TRUE)
+                pal <- brewer.pal(8,"Dark2")
+                #              pal <- pal[-(1:4)]
+                words <- names(hiFreq)
+                wordcloud(words[2:101], hiFreq[1:100] ,colors = pal)
+        })   
+        
         output$helpOverview <- renderUI({div(tags$link(rel="stylesheet",type="text/css",href="help.css"),
                                              p("The Healthcare industry has been at risk for some time related to security breaches.  This dashboard shows the breaches that have occurred between 2009 and 2015.  The data sources is from the federal government.  Healthcare Covered entities should use this dashboard to interpret where the majority of vulnerabilities occur, and how this is changing over time."),
 p("As required by section 13402(e)(4) of the HITECH Act, the Secretary must post a list of breaches of unsecured protected health information affecting 500 or more individuals. These breaches are now posted in a new, more accessible format that allows users to search and sort the posted breaches. Additionally, this new format includes brief summaries of the breach cases that OCR has investigated and closed, as well as the names of private practice providers who have reported breaches of unsecured protected health information to the Secretary. The breaches seen in this dashboard have been reported to the Secretary:
