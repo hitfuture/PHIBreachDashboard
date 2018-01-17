@@ -33,8 +33,8 @@ formatNumbers <- function(y){
 # }
 
 #require(devtools)
-#install_github('ramnathv/rCharts@dev')
-#install_github('ramnathv/rMaps')
+#devtools::install_github('ramnathv/rCharts@dev')
+#devtools::install_github('ramnathv/rMaps')
 #devtools::install_github('rstudio/shinyapps')
 #devtools::install_github('rstudio/DT')
 #install.packages("leaflet")
@@ -97,13 +97,14 @@ function(input, output) {
         
         output$breachPlotByYear <- renderPlot({
                 breachesInRange <- breach.filtered()
+                #browser()
                 if (nrow(breachesInRange) > 0) {
                         ggplot(
                                 breachesInRange, aes(
                                         x = as.factor(Breach.Year),fill = Covered.Entity.Type
                                 )
                         ) +
-                                geom_histogram(color = "black") +
+                                geom_bar(color = "black") +
                                 xlab("Year - Breach Submitted") +
                                 ylab("Number of Breaches") +
                                 
@@ -152,7 +153,7 @@ function(input, output) {
                         ggplot(breachesRange, aes(
                                 x = as.factor(Breach.Year),fill = Breach.Type
                         )) +
-                                geom_histogram(color = "black") +
+                                geom_bar(color = "black") +
                                 scale_y_continuous(labels=comma)+
                                 xlab("Year - Breach Submitted") +
                                 ylab("Breach Type - Count") +
@@ -224,9 +225,8 @@ function(input, output) {
                 bdata <- breach.filtered()[,1:10]
                 if(nrow(bdata) == 0)return(datatable(bdata))
                
-                datatable(bdata , extensions = c("ColReorder",'ColVis','Responsive' ), options = list(dom = 'RC<"clear">lfrtip',pageLength=20, autoWidth = TRUE,
-                                                                                         colVis = list(exclude = c(0, 1), activate = 'mouseover')
-                ) )
+                datatable(bdata , extensions = c("ColReorder",'Buttons','Responsive' ), options = list(dom = 'RC<"clear">lfrtip',pageLength=20, autoWidth = TRUE ,buttons = I('colvis'))
+                ) 
 
                 })
         output$helpOverview <- renderUI({div(tags$link(rel="stylesheet",type="text/css",href="help.css"),

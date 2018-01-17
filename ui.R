@@ -31,7 +31,7 @@ sidebar <-         dashboardSidebar(
         sidebarMenu(
                
                 menuItem("Breaches by Year", tabName = "breachByYear",icon = icon("calendar")),
-                menuItem("Breach by Devices", tabName = "breachByDevice", icon = icon("map")),
+           #     menuItem("Breach by Devices", tabName = "breachByDevice", icon = icon("map")),
                 menuItem("Breach Geography", tabName = "breachByGeo", icon = icon("map")),
                 menuItem("Breach Data", tabName = "breachData", icon = icon("table")),
              menuItem("Help", tabName = "help", icon = icon("question-circle"))
@@ -62,16 +62,16 @@ body <-  dashboardBody(tabItems(
                         box(title = "Breach Types - Impact",plotOutput("breachTypeImpactPlotByYear"))
                         
                 )),
-        tabItem(tabName = "breachByDevice",
-                fluidRow(
-#                         box(title = "Breach Count",plotOutput("breachPlotByYear")),
-#                         box(title = "Breach Impact",plotOutput("breachImpactPlotByYear"))
-                ),
-                fluidRow(
-#                         box(title = "Breach Types - Count",plotOutput("breachTypePlotByYear")),
-#                         box(title = "Breach Types - Impact",plotOutput("breachTypeImpactPlotByYear"))
-                        
-                )),
+#         tabItem(tabName = "breachByDevice",
+#                 fluidRow(
+# #                         box(title = "Breach Count",plotOutput("breachPlotByYear")),
+# #                         box(title = "Breach Impact",plotOutput("breachImpactPlotByYear"))
+#                 ),
+#                 fluidRow(
+# #                         box(title = "Breach Types - Count",plotOutput("breachTypePlotByYear")),
+# #                         box(title = "Breach Types - Impact",plotOutput("breachTypeImpactPlotByYear"))
+#                         
+#                 )),
         tabItem(tabName = "breachByGeo",
                 fluidRow(box(title="Breach By Geography", rCharts::chartOutput('breachesByGeo', 'datamaps'),width = 12)),
                 fluidRow(box(title = "Corelation between Population and Breach Count", plotOutput("breachesPopCoorelationPlot")),
